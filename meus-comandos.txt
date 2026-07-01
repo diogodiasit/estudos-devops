@@ -1,0 +1,2 @@
+Meu primeiro arquivo Linux
+Segundo comando aprendido: cat
