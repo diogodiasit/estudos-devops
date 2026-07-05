@@ -1,0 +1,11 @@
+git init - inicia um repositorio Git na pasta atual
+git config --global user.name "nome" - define seu nome no Git (global=vale pro sistema todo)
+git config --global user.email "email" - define seu email no Git
+git config --global init.defaultBranch main - define "main" como nome padrao da branch principal
+git config --global --list - mostra todas as configuracoes do Git
+git remote add origin url - conecta sua pasta local ao repositorio do GitHub (origin=apelido do repositorio remoto)
+git add . - marca todos os arquivos da pasta para serem enviados (. = tudo da pasta atual)
+git commit -m "mensagem" - registra uma foto dos arquivos marcados com uma mensagem descritiva
+git push - envia os arquivos registrados pro GitHub
+git push -u origin main - envia pela primeira vez e salva a configuracao (na proxima vez so git push ja basta)
+git branch -m main - renomeia a branch atual para main

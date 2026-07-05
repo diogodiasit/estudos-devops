@@ -1,2 +1,18 @@
 Meu primeiro arquivo Linux
 Segundo comando aprendido: cat
+ps aux - lista todos os processos do sistema (a=todos usuarios, u=mostra usuario, x=mostra sem terminal)
+ps aux | grep nome - filtra processos pelo nome (| pipe passa a saida de um comando pro outro)
+top - mostra processos em tempo real, como o Task Manager do Windows (sair: tecla Q)
+df -h - mostra espaco em disco (df=disk free, -h=formato legivel KB/MB/GB)
+free -h - mostra uso de memoria RAM e Swap (-h=formato legivel)
+pwd - mostra o diretorio atual onde voce esta
+ls - lista arquivos e pastas da pasta atual
+ls -la - lista arquivos com detalhes e arquivos ocultos (-l=detalhes, -a=ocultos)
+mkdir nome - cria uma pasta nova (mkdir=make directory)
+cd nome - navega para dentro de uma pasta (cd=change directory)
+cd .. - volta uma pasta acima (.. significa pasta pai)
+touch arquivo.txt - cria um arquivo vazio
+echo 'texto' > arquivo.txt - escreve texto no arquivo substituindo o conteudo (> substitui)
+echo 'texto' >> arquivo.txt - adiciona texto no final do arquivo sem apagar o que tinha (>> adiciona)
+cat arquivo.txt - mostra o conteudo de um arquivo
+grep 'palavra' arquivo.txt - procura uma palavra dentro de um arquivo e destaca onde ela aparece
