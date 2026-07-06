@@ -16,3 +16,8 @@ echo 'texto' > arquivo.txt - escreve texto no arquivo substituindo o conteudo (>
 echo 'texto' >> arquivo.txt - adiciona texto no final do arquivo sem apagar o que tinha (>> adiciona)
 cat arquivo.txt - mostra o conteudo de um arquivo
 grep 'palavra' arquivo.txt - procura uma palavra dentro de um arquivo e destaca onde ela aparece
+chmod 600 arquivo - muda permissoes do arquivo (6=dono ler+escrever, 0=grupo sem permissao, 0=outros sem permissao)
+chmod 755 arquivo - dono faz tudo (7), grupo e outros podem ler e executar (5)
+chmod 644 arquivo - dono ler+escrever (6), grupo e outros so leem (4) - padrao para arquivos normais
+chmod 777 arquivo - todos tem todas as permissoes - evitar em producao
+r=ler(4) w=escrever(2) x=executar(1) - soma os numeros para definir a permissao
