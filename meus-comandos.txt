@@ -27,3 +27,6 @@ systemctl stop servico - para o servico
 systemctl restart servico - para e inicia o servico novamente
 systemctl enable servico - ativa inicializacao automatica quando o sistema ligar
 systemctl disable servico - desativa inicializacao automatica
+journalctl -u servico - mostra todos os logs de um servico especifico (u=unit/servico)
+journalctl - mostra todos os logs do sistema sem filtro
+journalctl -u servico -f - acompanha os logs em tempo real (f=follow, igual ao tail -f)
