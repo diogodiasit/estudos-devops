@@ -30,3 +30,8 @@ systemctl disable servico - desativa inicializacao automatica
 journalctl -u servico - mostra todos os logs de um servico especifico (u=unit/servico)
 journalctl - mostra todos os logs do sistema sem filtro
 journalctl -u servico -f - acompanha os logs em tempo real (f=follow, igual ao tail -f)
+grep -i "palavra" arquivo - busca ignorando maiusculas e minusculas (i=ignore case)
+grep -v "palavra" arquivo - mostra linhas que NAO contem a palavra (v=invert)
+grep -n "palavra" arquivo - mostra o numero da linha onde a palavra foi encontrada (n=number)
+grep -c "palavra" arquivo - conta quantas linhas contem a palavra (c=count)
+grep -r "palavra" . - busca em todos os arquivos da pasta atual (r=recursive)
