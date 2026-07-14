@@ -35,3 +35,11 @@ grep -v "palavra" arquivo - mostra linhas que NAO contem a palavra (v=invert)
 grep -n "palavra" arquivo - mostra o numero da linha onde a palavra foi encontrada (n=number)
 grep -c "palavra" arquivo - conta quantas linhas contem a palavra (c=count)
 grep -r "palavra" . - busca em todos os arquivos da pasta atual (r=recursive)
+wc -l arquivo - conta quantas linhas tem um arquivo (wc=word count, -l=lines)
+wc -w arquivo - conta quantas palavras tem um arquivo (w=words)
+wc -c arquivo - conta quantos caracteres tem um arquivo (c=characters)
+find . -name "*.txt" - busca todos os arquivos que terminam com .txt na pasta atual
+find . -type f - busca so arquivos, ignorando pastas (f=file)
+find . -type d - busca so pastas (d=directory)
+find . -name "*.txt" -type f - combina dois filtros, busca arquivos que terminam com .txt
+find . -name "*.log" - busca todos os arquivos de log na pasta atual
