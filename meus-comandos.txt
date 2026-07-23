@@ -43,3 +43,10 @@ find . -type f - busca so arquivos, ignorando pastas (f=file)
 find . -type d - busca so pastas (d=directory)
 find . -name "*.txt" -type f - combina dois filtros, busca arquivos que terminam com .txt
 find . -name "*.log" - busca todos os arquivos de log na pasta atual
+env - lista todas as variaveis de ambiente do sistema
+echo $VARIAVEL - exibe o valor de uma variavel ($ acessa o valor da variavel)
+NOME="valor" - cria uma variavel temporaria (some quando fechar o terminal)
+export NOME="valor" - cria uma variavel e disponibiliza pro sistema todo
+export PATH="/novo/caminho:$PATH" - adiciona um novo caminho no PATH sem apagar os existentes
+source ~/.bashrc - recarrega o arquivo de configuracao do terminal sem precisar fechar
+~/.bashrc - arquivo de configuracao do terminal, executado toda vez que o terminal abre
