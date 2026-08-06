@@ -57,3 +57,11 @@ sudo apt upgrade         # instala atualizações dos pacotes já instalados
 sudo apt install nginx   # instala um pacote (exemplo: nginx)
 sudo apt remove nginx    # desinstala, mantém configs
 sudo apt purge nginx     # desinstala tudo, incluindo configs
+
+# Manipulação de arquivos (cp, mv, rm, rmdir)
+cp arquivo-origem.txt arquivo-destino.txt   # copia um arquivo
+cp -r pasta-origem/ pasta-destino/          # copia uma pasta inteira (-r = recursivo)
+mv arquivo-antigo.txt arquivo-novo.txt      # move OU renomeia um arquivo
+rm arquivo.txt                              # apaga um arquivo (sem lixeira, sem volta)
+rm -r pasta/                                # apaga pasta e tudo dentro dela
+rmdir pasta/                                # apaga pasta, mas só se estiver vazia
