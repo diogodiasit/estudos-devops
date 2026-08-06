@@ -50,3 +50,10 @@ export NOME="valor" - cria uma variavel e disponibiliza pro sistema todo
 export PATH="/novo/caminho:$PATH" - adiciona um novo caminho no PATH sem apagar os existentes
 source ~/.bashrc - recarrega o arquivo de configuracao do terminal sem precisar fechar
 ~/.bashrc - arquivo de configuracao do terminal, executado toda vez que o terminal abre
+
+# Gerenciamento de pacotes (apt)
+sudo apt update          # atualiza lista de pacotes disponíveis
+sudo apt upgrade         # instala atualizações dos pacotes já instalados
+sudo apt install nginx   # instala um pacote (exemplo: nginx)
+sudo apt remove nginx    # desinstala, mantém configs
+sudo apt purge nginx     # desinstala tudo, incluindo configs
