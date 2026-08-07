@@ -1,0 +1,12 @@
+# Segredos e credenciais
+.env
+*.pem
+*.key
+
+# Lixo de sistema
+.DS_Store
+Thumbs.db
+
+# Configuração pessoal de editor
+.vscode/
+.idea/
