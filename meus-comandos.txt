@@ -65,3 +65,18 @@ mv arquivo-antigo.txt arquivo-novo.txt      # move OU renomeia um arquivo
 rm arquivo.txt                              # apaga um arquivo (sem lixeira, sem volta)
 rm -r pasta/                                # apaga pasta e tudo dentro dela
 rmdir pasta/                                # apaga pasta, mas só se estiver vazia
+
+# Branches e merge (Semana 2)
+git branch nome-da-branch      # cria uma branch nova (nao entra nela ainda)
+git checkout nome-da-branch    # troca para uma branch que ja existe
+git checkout -b nome-da-branch # cria E ja entra na branch, tudo em um comando
+git branch                     # lista as branches, * marca em qual voce esta
+git merge nome-da-branch       # traz as mudancas de outra branch para a atual
+git branch -d nome-da-branch   # apaga uma branch que ja foi mergeada
+
+# .gitignore
+touch .gitignore                # cria o arquivo especial que o Git reconhece
+# Dentro dele, listar o que NUNCA deve subir pro repositorio:
+# .env, *.pem, *.key           -> segredos e credenciais
+# .DS_Store, Thumbs.db          -> lixo de sistema operacional
+# .vscode/, .idea/              -> configuracao pessoal de editor
