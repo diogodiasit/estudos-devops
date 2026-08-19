@@ -1,31 +1,33 @@
 # 🎮 Progresso — Jornada DevOps/SRE
 
-**Nível atual:** 2 — Explorador de Redes
+**Personagem:** 🧝‍♂️ Lorde, o Elfo Mago da Tecnologia
+**Nível atual:** 3 — Explorador de Redes
 **XP total:** 450
-**Próximo nível:** 3 — Domador de Containers (faltam 150 XP)
+**Próximo nível:** 4 — Domador de Containers (faltam 150 XP)
 
 ---
 
 ## 🏅 Badges conquistadas
 
-- 🐧 Dominador do Terminal (Módulo 1 - Linux)
-- 🔀 Mestre do Git (Módulo 1 - Git)
-- 🌐 Detetive de Redes (Módulo 2 - Redes)
-- 🔑 Guardião das Chaves (Módulo 2 - SSH)
+- 🐧 Dominador do Terminal (Fase 1 - Linux)
+- 🔀 Mestre do Git (Fase 2 - Git)
+- 🌐 Detetive de Redes (Fase 3 - Redes)
+- 🔑 Guardião das Chaves (Fase 3 - SSH)
 
 ---
 
 ## 🗺️ Mapa de fases
 
-- [x] Fase 1 — Linux + Git (concluída)
-- [x] Fase 2 — Redes básicas (concluída: DNS, IP, portas, HTTP/HTTPS, SSH, firewall, load balancer, troubleshooting)
-- [ ] Fase 3 — Docker (em andamento)
-- [ ] Fase 4 — CI/CD
-- [ ] Fase 5 — Azure
-- [ ] Fase 6 — Kubernetes
-- [ ] Fase 7 — Terraform
-- [ ] Fase 8 — Monitoramento
-- [ ] Fase 9 (chefão final) — Projetos de entrevista real, incluindo migração on-premise → Azure
+- [x] Fase 1 — Linux (pasta: 01-linux)
+- [x] Fase 2 — Git (pasta: 02-git)
+- [x] Fase 3 — Redes básicas (pasta: 03-redes-basicas)
+- [ ] Fase 4 — Docker (em andamento)
+- [ ] Fase 5 — CI/CD
+- [ ] Fase 6 — Azure
+- [ ] Fase 7 — Kubernetes
+- [ ] Fase 8 — Terraform
+- [ ] Fase 9 — Monitoramento
+- [ ] Fase 10 (chefão final) — Projetos de entrevista real, incluindo migração on-premise → Azure
 
 ---
 
