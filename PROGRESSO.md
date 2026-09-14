@@ -1,9 +1,9 @@
 # 🎮 Progresso — Jornada DevOps/SRE
 
-**Personagem:** 🧝‍♂️ Lorde, o Elfo Mago da Tecnologia
-**Nível atual:** 3 — Explorador de Redes
-**XP total:** 450
-**Próximo nível:** 4 — Domador de Containers (faltam 150 XP)
+**Personagem:** 🧝‍♂️ Diogo Dias, o Elfo Mago da Tecnologia
+**Nível atual:** 4 — Domador de Containers
+**XP total:** 700
+**Próximo nível:** 5 — Automatizador de Pipelines (faltam 200 XP)
 
 ---
 
@@ -13,6 +13,8 @@
 - 🔀 Mestre do Git (Fase 2 - Git)
 - 🌐 Detetive de Redes (Fase 3 - Redes)
 - 🔑 Guardião das Chaves (Fase 3 - SSH)
+- 🐳 Domador de Containers (Fase 4 - Docker)
+- 📦 Publicador de Imagens (Fase 4 - Docker Hub)
 
 ---
 
@@ -21,7 +23,7 @@
 - [x] Fase 1 — Linux (pasta: 01-linux)
 - [x] Fase 2 — Git (pasta: 02-git)
 - [x] Fase 3 — Redes básicas (pasta: 03-redes-basicas)
-- [ ] Fase 4 — Docker (em andamento)
+- [x] Fase 4 — Docker (pasta: 04-docker) — containers, volumes, compose, Docker Hub
 - [ ] Fase 5 — CI/CD
 - [ ] Fase 6 — Azure
 - [ ] Fase 7 — Kubernetes
@@ -44,3 +46,4 @@
 - Completar um quiz/desafio: +20 XP
 - Commitar no GitHub: +10 XP
 - Errar e tentar de novo: +10 XP (errar também conta, porque é tentativa)
+- Projetos extras/divertidos não contam XP — são só diversão, separados do progresso oficial
