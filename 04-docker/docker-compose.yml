@@ -1,0 +1,14 @@
+services:
+  site:
+    build: ./webserver
+    ports:
+      - "8083:80"
+  banco:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: senha123
+    volumes:
+      - dados-postgres:/var/lib/postgresql/data
+
+volumes:
+  dados-postgres:
