@@ -66,3 +66,10 @@ rm arquivo.txt                              # apaga um arquivo (sem lixeira, sem
 rm -r pasta/                                # apaga pasta e tudo dentro dela
 rmdir pasta/                                # apaga pasta, mas só se estiver vazia
 
+
+## Ver logs de um servico em tempo real, na maquina host
+journalctl -f
+# -f = follow, mostra os logs conforme acontecem, ao vivo
+# Util para reproduzir um erro e ver o problema acontecendo na hora
+# So funciona em servicos gerenciados pelo systemd, na maquina host
+# (dentro de containers, geralmente usar "docker logs -f" no lugar)

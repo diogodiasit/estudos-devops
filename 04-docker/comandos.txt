@@ -50,3 +50,9 @@ docker run -d -p 8081:80 meu-webserver
 # docker run = cria um container NOVO (porta precisa ser escolhida de novo)
 # docker start = religa um container EXISTENTE (mantém a config de antes)
 # container parado (Exited) ainda existe; container removido (rm) some de vez
+
+## Ver logs de um container em tempo real
+docker logs -f <nome_ou_id_do_container>
+# -f = follow, mostra em tempo real conforme acontece
+# Equivalente ao journalctl -f, mas para dentro de containers
+# (containers geralmente nao rodam systemd, entao journalctl nao funciona la dentro)

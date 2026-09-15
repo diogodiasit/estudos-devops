@@ -23,3 +23,12 @@ touch .gitignore                # cria o arquivo especial que o Git reconhece
 # .env, *.pem, *.key           -> segredos e credenciais
 # .DS_Store, Thumbs.db          -> lixo de sistema operacional
 # .vscode/, .idea/              -> configuracao pessoal de editor
+
+## Investigar historico - quem mudou o que, e quando
+git log
+# mostra o historico de commits
+
+git blame <arquivo>
+# mostra, linha por linha, quem foi o ultimo a mudar cada linha e em qual commit
+# muito usado quando algo quebra logo depois de um deploy:
+# "o que mudou desde a ultima versao que funcionava?"

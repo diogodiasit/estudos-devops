@@ -71,3 +71,29 @@ Importante: quem "guarda" a informação depois de configurado é o SERVIDOR
 4. Handshake HTTPS estabelece uma chave temporária de criptografia
 5. Conversa acontece protegida até eu sair do site
 
+
+## TTL (Time To Live) do DNS
+- Cada resposta de DNS vem com um tempo de cache (visto no "dig", ex: 300 segundos).
+- Mudancas de DNS NAO sao instantaneas em todo mundo - cada maquina/rede guarda
+  a resposta antiga em cache ate esse tempo expirar.
+- Por isso, apos mudar um registro DNS, algumas maquinas atualizam antes de outras -
+  parece "aleatorio", mas e so o TTL de cada uma vencendo em momentos diferentes.
+- Isso explica sintomas tipo "a aplicacao atualizou, mas so parou de funcionar em
+  algumas maquinas" - times diferentes de cache expirando em horarios diferentes.
+
+## Códigos HTTP mais comuns
+2xx = sucesso (200 OK)
+3xx = redirecionamento (301 permanente, 302 temporario)
+4xx = erro do CLIENTE (400 pedido mal formatado, 401 nao autenticado,
+      403 autenticado mas sem permissao, 404 nao encontrado)
+5xx = erro do SERVIDOR (500 erro generico na aplicacao, 502 Bad Gateway -
+      proxy/gateway recebeu resposta invalida do backend, 503 servico indisponivel)
+
+Diferenca importante 401 vs 403:
+- 401 = "nao sei quem voce e, se identifique"
+- 403 = "sei quem voce e, mas voce nao tem permissao"
+
+Diferenca importante 500 vs 502 (relevante para Application Gateway/proxy reverso):
+- 500 = a aplicacao respondeu, mas quebrou por dentro (bug no codigo)
+- 502 = o proxy/gateway nao conseguiu resposta valida do backend
+  (VM caida, health probe reprovando, timeout)
