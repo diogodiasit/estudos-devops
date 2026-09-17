@@ -12,3 +12,4 @@ Este repositório documenta minha jornada de estudos para me tornar SRE/DevOps. 
 ## Como uso este repositório
 
 Cada pasta contém arquivos de comandos praticados naquele módulo, sempre com explicação do que cada parte faz — não só "copiar e colar". Progresso gamificado (XP, badges, fases) registrado em PROGRESSO.md.
+teste
