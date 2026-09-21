@@ -1,0 +1,30 @@
+# =========================================================
+# agendamento.yml
+# Roda os testes DENTRO do container, disparado quando um
+# Pull Request é aberto ou atualizado, mirando a main
+# =========================================================
+
+name: Testes - Projeto Agendamento
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v4
+
+      - name: Buildar a imagem
+        run: |
+          cd projeto-agendamento/app
+          docker build -t agendamento-barbearia .
+
+      - name: Rodar os testes dentro do container
+        run: |
+          cd projeto-agendamento/app
+          docker run agendamento-barbearia
