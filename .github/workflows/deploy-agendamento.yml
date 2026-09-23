@@ -1,0 +1,37 @@
+name: Deploy - Publicar imagem no Docker Hub
+
+# Esse workflow só dispara quando algo é enviado (push) direto pra main —
+# e na prática, isso só acontece via merge de PR, já que temos branch protection
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest   # mesma "máquina descartável" de sempre
+    steps:
+      # Passo 1: baixar o código da main pro runner (mesma ideia de sempre)
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v4
+
+      # Passo 2: fazer login no Docker Hub usando os secrets que você criou
+      # essa action pronta (docker/login-action) faz o "docker login" por trás dos panos,
+      # usando os dois secrets como usuário e senha
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Passo 3: buildar a imagem de novo (mesmo comando do outro workflow)
+      # o nome da imagem já vem com seu usuário do Docker Hub na frente,
+      # porque é assim que o Docker Hub sabe em qual "gaveta" (repositório) publicar
+      - name: Buildar a imagem
+        run: |
+          cd projeto-agendamento/app
+          docker build -t diogojdiasit/agendamento-barbearia:latest .
+
+      # Passo 4: publicar (enviar) a imagem pro Docker Hub
+      - name: Publicar a imagem no Docker Hub
+        run: docker push diogojdiasit/agendamento-barbearia:latest
