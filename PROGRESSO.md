@@ -2,8 +2,8 @@
 
 **Personagem:** 🧝‍♂️ Diogo Dias, o Elfo Mago da Tecnologia
 **Nível atual:** 4 — Domador de Containers
-**XP total:** 700
-**Próximo nível:** 5 — Automatizador de Pipelines (faltam 200 XP)
+**XP total:** 780
+**Próximo nível:** 5 — Automatizador de Pipelines (faltam 120 XP)
 
 ---
 
@@ -15,6 +15,8 @@
 - 🔑 Guardião das Chaves (Fase 3 - SSH)
 - 🐳 Domador de Containers (Fase 4 - Docker)
 - 📦 Publicador de Imagens (Fase 4 - Docker Hub)
+- 🔄 Mestre do CI/CD (Fase 5 - Pipelines automatizados)
+- 🛡️ Guardião da Branch Protegida (Fase 5 - Branch Protection)
 
 ---
 
@@ -24,7 +26,7 @@
 - [x] Fase 2 — Git (pasta: 02-git)
 - [x] Fase 3 — Redes básicas (pasta: 03-redes-basicas)
 - [x] Fase 4 — Docker (pasta: 04-docker) — containers, volumes, compose, Docker Hub
-- [ ] Fase 5 — CI/CD
+- [x] Fase 5 — CI/CD (pasta: 05-cicd) — GitHub Actions, PR automatizado, branch protection, build e publicação automática de imagem Docker
 - [ ] Fase 6 — Azure
 - [ ] Fase 7 — Kubernetes
 - [ ] Fase 8 — Terraform
