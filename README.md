@@ -9,6 +9,7 @@ Este repositório documenta minha jornada de estudos para me tornar SRE/DevOps. 
 - [Fase 03 - Redes básicas](./03-redes-basicas/) — DNS, IP, portas, HTTP/HTTPS, SSH, firewall, load balancer, troubleshooting
 - [Fase 04 - Docker](./04-docker/) — containers, imagens, Dockerfile, volumes, docker-compose, Docker Hub, troubleshooting de certificado TLS
 - [Fase 05 - CI/CD](./05-cicd/) — GitHub Actions, testes automatizados em Pull Request, branch protection, build e publicação automática de imagem Docker (projeto prático: `projeto-agendamento`)
+- [Fase 06 - Azure DevOps](./06-azure-devops/) — Azure Repos, Azure Pipelines, Service Connections, Branch Policies (Build Validation), comparativo com GitHub Actions
 
 ## Como uso este repositório
 

@@ -1,9 +1,9 @@
 # 🎮 Progresso — Jornada DevOps/SRE
 
 **Personagem:** 🧝‍♂️ Diogo Dias, o Elfo Mago da Tecnologia
-**Nível atual:** 4 — Domador de Containers
-**XP total:** 780
-**Próximo nível:** 5 — Automatizador de Pipelines (faltam 120 XP)
+**Nível atual:** 5 — Automatizador de Pipelines
+**XP total:** 850
+**Próximo nível:** 6 — Mestre da Nuvem (faltam 150 XP)
 
 ---
 
@@ -17,6 +17,7 @@
 - 📦 Publicador de Imagens (Fase 4 - Docker Hub)
 - 🔄 Mestre do CI/CD (Fase 5 - Pipelines automatizados)
 - 🛡️ Guardião da Branch Protegida (Fase 5 - Branch Protection)
+- ☁️ Poliglota da Nuvem (Fase 6 - Azure DevOps)
 
 ---
 
@@ -27,7 +28,7 @@
 - [x] Fase 3 — Redes básicas (pasta: 03-redes-basicas)
 - [x] Fase 4 — Docker (pasta: 04-docker) — containers, volumes, compose, Docker Hub
 - [x] Fase 5 — CI/CD (pasta: 05-cicd) — GitHub Actions, PR automatizado, branch protection, build e publicação automática de imagem Docker
-- [ ] Fase 6 — Azure
+- [x] Fase 6 — Azure DevOps (pasta: 06-azure-devops) — Azure Repos, Pipelines, Service Connections, Branch Policies
 - [ ] Fase 7 — Kubernetes
 - [ ] Fase 8 — Terraform
 - [ ] Fase 9 — Monitoramento
