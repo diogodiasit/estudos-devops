@@ -1,0 +1,32 @@
+# Deployment: mantém 3 cópias do nginx sempre rodando
+apiVersion: apps/v1       # versão da API que entende Deployment
+kind: Deployment           # tipo do objeto
+metadata:
+  name: loja-frontend        # nome do Deployment
+spec:
+  replicas: 3                  # quantas cópias manter
+  selector:
+    matchLabels:
+      app: loja-frontend      # regra: "meus Pods são os que têm esta etiqueta"
+  template:                  # modelo usado para criar cada Pod
+    metadata:
+      labels:
+        app: loja-frontend    # etiqueta que cada Pod recebe ao nascer
+    spec:
+      containers:
+      - name: nginx               # nome do container dentro do Pod
+        image: nginx:latest        # imagem usada
+        ports:
+        - containerPort: 80        # porta em que o container escuta (informativo)
+---
+# Service: dá um nome e um IP fixo para os Pods acima
+apiVersion: v1              # versão base da API, usada por Service
+kind: Service
+metadata:
+  name: svc-loja-frontend     # nome do Service, vira o endereço DNS interno
+spec:
+  selector:
+    app: loja-frontend       # mesma etiqueta do Deployment, escrita na mão
+  ports:
+  - port: 80                    # porta em que o Service recebe conexões
+    targetPort: 80               # porta dos Pods para onde ele entrega

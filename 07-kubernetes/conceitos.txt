@@ -1,0 +1,99 @@
+# Fase 7 - Kubernetes - Modulo 1 (Deploy) - Conceitos
+
+## Hierarquia basica
+- Pod: menor unidade gerenciada pelo Kubernetes, geralmente 1 container
+- Node: uma maquina (real ou simulada) onde Pods rodam
+- Cluster: o conjunto de Nodes administrados por um mesmo Control Plane
+  (um Cluster pode ter so 1 Node, nao precisa de varios)
+
+## Deployment
+- Um Pod sozinho e fragil: se morre, ninguem sobe outro no lugar
+- Deployment garante uma quantidade fixa de replicas sempre rodando
+- Se um Pod morre, o Deployment sobe outro automaticamente
+- kubectl scale muda o numero de replicas (numero final desejado, nao "adicionar")
+- Nomes de Pods sao gerados pelo Deployment: <deployment>-<hash-replicaset>-<sufixo-aleatorio>
+  Voce nunca escolhe o nome de Pods de um Deployment
+
+## Etiquetas (labels) e Service
+- Toda etiqueta e um par chave=valor. Ex: app=meu-app
+  "app" e a chave (convencao do kubectl create), "meu-app" e o valor
+- O Deployment coloca a etiqueta em cada Pod ao criar
+- O Service NAO gerencia Pods (quem gerencia e o Deployment)
+- O Service so GUARDA UMA REGRA (selector) e roteia para Pods que combinam com ela
+- kubectl expose copia a regra do Deployment para o Service automaticamente
+- Em YAML, o selector e escrito na mao, nao e copiado sozinho
+- O IP de um Pod muda quando ele reinicia; o IP do Service (ClusterIP) e fixo
+- Nome do Deployment, nome dos Pods e nome do Service sao independentes -
+  o que liga tudo e a etiqueta, nao o nome
+
+## Portas de um Service
+- --port: porta em que o Service recebe conexoes
+- --target-port: porta dos Pods para onde ele entrega (se omitido, copia --port)
+- Quem decide em que porta o Pod escuta e a aplicacao dentro da imagem
+  (o Service nao abre porta nenhuma no Pod, so direciona trafego)
+- Um Service pode ter varias portas ao mesmo tempo (cada uma com seu name, port, targetPort)
+  util quando uma aplicacao responde em mais de uma porta (ex: HTTP e metricas)
+
+## kubectl port-forward (ferramenta de teste, nao de producao)
+- Cria um tunel entre uma porta local (WSL) e um Pod dentro do cluster
+- Usa o Service so para ESCOLHER um Pod; depois disso vai direto nele
+  (nao passa pelo balanceamento real do Service)
+- Caminho: navegador -> Windows (repassa) -> WSL -> kubectl (traduz a porta)
+  -> kube-apiserver -> kubelet do Node -> Pod
+- O tunel so existe enquanto o comando esta rodando; fechar o terminal derruba ele
+
+## DNS interno (como Pods se acham de verdade, sem tunel)
+- Um Pod pode chamar outro usando so o NOME do Service (nao IP)
+- O CoreDNS (Pod do proprio kube-system) traduz esse nome para o IP fixo do Service
+- Esse e o caminho real de producao: Pod -> nome do Service -> kube-proxy reparte
+  entre os Pods vivos que tem a etiqueta certa
+
+## Imperativo vs declarativo (YAML)
+- Comandos (create, expose, scale, set image) = imperativo: "faça esta ação agora"
+- YAML + kubectl apply -f = declarativo: "descrevo como quero que fique"
+- apply pode ser rodado varias vezes sem problema (so aplica o que mudou)
+- Forma usada em empresa: YAML versionado no Git, aplicado via pipeline (CI/CD)
+
+## Rolling update (trocar versao sem downtime)
+- kubectl set image troca a imagem de um container dentro do Deployment
+- A troca e gradual: sobe 1 Pod novo, espera ficar saudavel, so entao derruba 1 antigo
+- Em nenhum momento os Pods ficam todos fora do ar ao mesmo tempo
+- kubectl rollout status acompanha o progresso ate terminar
+
+## Rollback (voltar atras)
+- kubectl rollout undo volta para a versao anterior, usando o mesmo mecanismo gradual
+- kubectl rollout history lista as versoes anteriores do Deployment
+- Se o Deployment foi criado via apply, o undo nao atualiza a "ultima config aplicada" -
+  um proximo apply pode sobrescrever o rollback com o que estiver no arquivo YAML
+
+## Estrutura interna do Kubernetes (descoberta pratica)
+- O proprio Kubernetes roda como Pods, no namespace kube-system
+  (etcd, kube-apiserver, kube-scheduler, kube-controller-manager, kube-proxy,
+  coredns, o CNI como kindnet) - ele usa a propria estrutura de Pods para se administrar
+- kubelet e containerd NAO sao Pods - sao processos rodando direto no sistema do Node,
+  responsaveis por criar e gerenciar todos os Pods (incluindo os do proprio sistema)
+- Control Plane e Node sao papeis LOGICOS, nao camadas fisicas separadas -
+  no Minikube, os dois rodam dentro do mesmo container (kicbase)
+- Fluxo de qualquer mudanca: kubectl -> kube-apiserver -> etcd (grava o estado desejado)
+  -> controller-manager (nota diferenca) -> scheduler (decide o Node) -> kubelet
+  (executa de verdade) -> kube-proxy (ajusta rede do Service)
+- Nenhum componente fala direto com outro - todos só conversam com o kube-apiserver
+
+## Minikube
+- E uma aplicacao (nao so uma imagem Docker) que automatiza o processo de subir
+  um cluster Kubernetes completo dentro de 1 container Docker
+- minikube start faz, por baixo, um docker run (1a vez) ou docker start (container
+  ja existe) - e tambem configura kubelet, CNI e kubeconfig automaticamente
+- kubectl e uma ferramenta separada do Minikube - e so quem "fala" com qualquer
+  cluster (local ou na nuvem), lendo o arquivo ~/.kube/config
+- Container do Minikube parado nao apaga nada - minikube start so religa ele
+- minikube delete apaga o container inteiro, incluindo certificados instalados
+  manualmente dentro dele (ver troubleshooting no comandos.txt)
+
+## AKS (Azure Kubernetes Service)
+- Mesma logica do Azure DevOps: a Microsoft gerencia o Control Plane,
+  o time so cuida dos Nodes e das aplicacoes
+- Comandos (kubectl) sao os mesmos usados no Minikube - o que muda e quem
+  administra o Control Plane por tras
+- Mercado prefere Kubernetes gerenciado (AKS/EKS/GKE) a self-managed,
+  exceto em cenarios on-premise ou empresas com time de infra dedicado

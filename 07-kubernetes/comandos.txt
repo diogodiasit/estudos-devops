@@ -1,0 +1,68 @@
+# Fase 7 - Kubernetes - Modulo 1 (Deploy) - Comandos praticados
+
+## Instalacao
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+## Subir e gerenciar o cluster
+minikube start --force
+minikube status
+minikube ssh
+minikube delete
+
+kubectl get nodes
+kubectl get pods -n kube-system -o wide
+
+## Pod solto (sem protecao, so para teste)
+kubectl run meu-primeiro-pod --image=nginx
+kubectl describe pod meu-primeiro-pod
+kubectl delete pod meu-primeiro-pod
+
+## Deployment (forma correta, com auto-recuperacao)
+kubectl create deployment loja-frontend --image=nginx --replicas=3
+kubectl scale deployment loja-frontend --replicas=5
+kubectl get deployment loja-frontend -o wide
+
+## Service (rede estavel para os Pods)
+kubectl expose deployment loja-frontend --port=80 --type=ClusterIP --name=svc-loja-frontend
+kubectl get service svc-loja-frontend -o wide
+kubectl describe service svc-loja-frontend
+kubectl get endpoints svc-loja-frontend
+kubectl get pods --show-labels
+
+## Testar acesso (tunel de teste, nao usar em producao)
+kubectl port-forward service/svc-loja-frontend 8080:80
+
+## Testar o DNS interno (Pod falando com Pod pelo nome)
+kubectl run teste --rm -it --image=busybox --restart=Never -- wget -qO- svc-loja-frontend
+
+## YAML declarativo (forma usada em empresa)
+kubectl apply -f 07-kubernetes/webserver.yaml
+kubectl get all -l app=loja-frontend
+
+## Atualizar versao sem downtime (rolling update)
+kubectl set image deployment/loja-frontend nginx=nginx:1.26
+kubectl rollout status deployment/loja-frontend
+
+## Voltar para a versao anterior (rollback)
+kubectl rollout undo deployment/loja-frontend
+kubectl rollout history deployment/loja-frontend
+
+## Troubleshooting real - certificado do Cloudflare bloqueando pull de imagem
+# Sintoma: Node fica NotReady, ou Pod fica ErrImagePull / ImagePullBackOff
+kubectl get nodes
+kubectl get pods -n kube-system
+kubectl describe pod -n kube-system <nome-do-pod-com-erro>
+# Se o erro for "x509: certificate signed by unknown authority":
+minikube ssh
+openssl s_client -connect production.cloudfront.docker.com:443 -showcerts </dev/null 2>/dev/null | openssl x509 -outform PEM > /tmp/cloudflare.crt
+sudo cp /tmp/cloudflare.crt /usr/local/share/ca-certificates/cloudflare.crt
+sudo update-ca-certificates
+sudo systemctl restart containerd
+exit
+kubectl delete pod <nome-do-pod-com-erro>
+# Atencao: esse certificado se perde se o container do minikube for apagado
+# (minikube delete). Precisa ser reinstalado depois de cada delete.
