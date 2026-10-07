@@ -1,0 +1,15 @@
+apiVersion: v1                  # versão da API (objetos básicos usam v1)
+kind: ConfigMap                 # tipo: configuração comum, não sensível
+metadata:
+  name: config-app              # nome do ConfigMap (o Deployment aponta por esse nome)
+data:                           # os pares nome: valor
+  DB_SERVER: "banco-novo"       # servidor do banco
+  DB_USER: "app_loja"           # usuário do banco
+---
+apiVersion: v1
+kind: Secret                    # tipo: dado sensível
+metadata:
+  name: segredo-app             # nome do Secret
+type: Opaque                    # tipo genérico de Secret
+stringData:                     # você escreve em texto puro, e o Kubernetes converte para base64 ao guardar
+  DB_PASSWORD: "senha123"       # a senha do banco
