@@ -97,3 +97,94 @@
   administra o Control Plane por tras
 - Mercado prefere Kubernetes gerenciado (AKS/EKS/GKE) a self-managed,
   exceto em cenarios on-premise ou empresas com time de infra dedicado
+
+# Fase 7 - Kubernetes - Modulo 2 (Rede) - Conceitos
+
+## DNS interno
+- Dentro do cluster, o nome do Service e resolvido pelo DNS interno (CoreDNS)
+- Mesmo namespace: nome curto (svc-banco)
+- Outro namespace: nome.namespace (svc-banco.dados)
+- Nome completo: svc-banco.dados.svc.cluster.local
+- Apontar sempre para o NOME do Service, nunca para IP de Pod (o IP muda)
+
+## Ingress
+- Ingress (YAML) so guarda REGRAS (caminho -> Service). Nao executa nada
+- Ingress Controller (Pod com nginx) e quem executa as regras. Sem controller, nada funciona
+- ingressClassName diz qual controller le aquela regra
+- Service trabalha na camada 4 (IP e porta); Ingress na camada 7 (host e caminho)
+- Cadeia completa: DNS -> IP do load balancer -> Node -> controller -> Service -> Pod
+- O Control Plane guarda as regras e fica FORA do caminho do trafego
+- O controller e um Pod comum: o scheduler escolhe o Node (da para forcar com
+  nodeSelector, affinity ou taints). Em producao: 2 ou mais replicas em Nodes diferentes
+- O Ingress cuida so da porta de entrada; as URLs internas (/pisos/carvalho) sao da aplicacao
+- pathType Prefix: vale para o caminho e tudo que comeca com ele. A regra mais especifica vence
+- O nome do caminho e o nome do Service sao independentes: a regra liga os dois
+- 503 quase sempre = Service sem Pod pronto (etiqueta errada ou Pod nao pronto)
+- 404 = caminho sem regra, ou o app nao conhece aquele caminho
+- ingress-nginx foi anunciado como aposentado (manutencao ate marco/2026);
+  o sucessor oficial e o Gateway API (verificar a situacao atual)
+
+## Saida do Pod para a rede externa (ex: banco na nuvem)
+- Caminho: Pod -> Node -> rede da nuvem (VNet) -> destino
+- O Node faz NAT: troca o IP de origem pelo dele e anota a conexao numa tabela;
+  na volta, usa a tabela para devolver a resposta ao Pod certo
+- Conexao parada por muito tempo perde a entrada na tabela (usar keep-alive ou connection pool)
+- Precisa haver rede entre cluster e banco: mesma VNet, VNet peering, ou Private Endpoint
+- Private Endpoint: o banco ganha IP privado na VNet; o nome precisa resolver
+  para o IP privado (zona de DNS privada)
+- Diagnostico: timeout = algo bloqueando (firewall, NetworkPolicy, IP nao liberado);
+  connection refused = chegou, mas nada escutava; nome nao resolve = DNS
+
+## Producao x laboratorio
+- Producao: o IP publico vem do load balancer da nuvem (LoadBalancer no AKS)
+- Minikube: o "minikube tunnel" faz o papel do load balancer. So existe no laboratorio
+
+
+# Fase 7 - Kubernetes - Modulo 3 (Configuracao e saude) - Conceitos
+
+## ConfigMap e Secret
+- A imagem e imutavel e igual em todos os ambientes; so a configuracao muda e entra de fora
+- ConfigMap: configuracao comum (URL, nivel de log). Secret: dado sensivel (senha, token)
+- Secret NAO e cofre: e so base64 (kubectl get secret ... | base64 -d mostra a senha)
+- Protecao real: RBAC (quem pode ler secrets), criptografia em repouso, cofre externo (Azure Key Vault)
+- Secret com senha real nunca vai para o Git
+- O ConfigMap nao sabe quem o usa: o Deployment aponta para ele pelo NOME (envFrom)
+- ConfigMap e Secret so sao lidos por Pods do MESMO namespace
+- O nome da chave e um acordo entre o codigo e o ConfigMap/Secret
+  (no .NET, a variavel Db__Server sobrescreve Db:Server do appsettings)
+- Valor que vem de fora vence o do appsettings; o appsettings fica com os valores padrao
+
+## Entrega por variavel de ambiente x arquivo
+- Variavel: o Pod recebe uma COPIA quando nasce. Mudar o ConfigMap nao muda Pods
+  que ja estao rodando -> precisa de rollout restart
+- Arquivo montado (volume): atualiza sozinho em cerca de 1 minuto, mas o app precisa reler
+  (com subPath nao atualiza)
+- Arquivo e preferido para certificados e segredos sensiveis (menos exposicao em logs)
+- Volume em dois blocos: volumes (DE ONDE vem) e volumeMounts (ONDE aparece no container),
+  ligados pelo campo name, que e so um rotulo
+- Volume de Secret/ConfigMap nao persiste dados: e so uma janela para o objeto no cluster
+
+## Namespace
+- Pasta de organizacao dentro do cluster, guardada no Control Plane. Nao e um lugar fisico
+- Um Node pode ter Pods de varios namespaces, e um namespace pode ter Pods em todos os Nodes
+- Permite repetir nomes em pastas diferentes e aplicar permissoes e limites por pasta
+- NAO isola a rede sozinho: para isso e preciso NetworkPolicy
+
+## Probes (testes de saude, executadas pelo kubelet)
+- Readiness: o Pod esta pronto para receber trafego? Falhou -> sai da lista do Service,
+  sem reiniciar. Resolve o app ainda ligando ou que perdeu o banco
+- Liveness: o app esta vivo? Falhou -> o kubelet reinicia o CONTAINER (RESTARTS sobe),
+  o Pod continua o mesmo
+- Tres tipos de teste: exec (comando), httpGet (endereco como /health), tcpSocket (porta)
+- Liveness deve testar so o proprio app, nunca dependencias como o banco
+  (senao o Kubernetes reinicia tudo sem resolver nada)
+- Deployment cuida do NUMERO de Pods (via ReplicaSet); o kubelet cuida da saude do container
+
+## Pod x container x Deployment
+- Pod e a casa, container e o morador. Quase sempre 1 container por Pod
+- Pod e descartavel: o Kubernetes nao conserta, troca por outro
+- O que mata o container: erro no app, OOMKilled (falta de memoria), liveness
+- O que mata o Pod: delete, Node cai, eviction, rolling update, escalar para baixo
+- Comando que MUDA o Deployment (rollout restart, scale) age em todos os Pods
+- exec e logs com deploy/nome escolhem UM Pod, sem voce controlar qual;
+  para um Pod especifico, usar o nome exato dele

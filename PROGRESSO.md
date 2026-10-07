@@ -29,7 +29,7 @@
 - [x] Fase 4 — Docker (pasta: 04-docker) — containers, volumes, compose, Docker Hub
 - [x] Fase 5 — CI/CD (pasta: 05-cicd) — GitHub Actions, PR automatizado, branch protection, build e publicação automática de imagem Docker
 - [x] Fase 6 — Azure DevOps (pasta: 06-azure-devops) — Azure Repos, Pipelines, Service Connections, Branch Policies
-- [ ] Fase 7 — Kubernetes
+- [ ] Fase 7 — Kubernetes (pasta: 07-kubernetes) — em andamento: Deployment, Service, Ingress, ConfigMap e Secret, probes (faltam HPA, volumes e StatefulSet, RBAC e AKS)
 - [ ] Fase 8 — Terraform
 - [ ] Fase 9 — Monitoramento
 - [ ] Fase 10 (chefão final) — Projetos de entrevista real, incluindo migração on-premise → Azure

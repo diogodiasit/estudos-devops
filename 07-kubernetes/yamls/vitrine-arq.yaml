@@ -1,0 +1,45 @@
+# RESUMO: este Deployment cria 1 Pod que recebe o Secret "segredo-app"
+# como ARQUIVOS dentro da pasta /etc/segredos (em vez de variáveis).
+#
+# O Secret NÃO é criado aqui. Ele já existe no cluster (criamos no config-teste.yaml).
+# Este arquivo só diz: "pegue aquele Secret e mostre como arquivos neste Pod".
+#
+# Como funciona (duas partes que se ligam pelo nome "pasta-segredos"):
+#   (A) volumes       -> DE ONDE vem o conteúdo (o Secret)
+#   (B) volumeMounts  -> ONDE ele aparece dentro do container (a pasta)
+
+apiVersion: apps/v1               # versão da API usada para Deployments
+kind: Deployment                  # tipo do objeto: mantém os Pods sempre de pé
+metadata:
+  name: vitrine-arq               # nome deste Deployment
+
+spec:
+  replicas: 1                     # quantidade de Pods (1 basta para o teste)
+  selector:
+    matchLabels:
+      app: vitrine-arq            # "os Pods que eu cuido são os que têm esta etiqueta"
+
+  template:                       # o molde de cada Pod criado
+    metadata:
+      labels:
+        app: vitrine-arq          # etiqueta que cada Pod recebe (igual à do selector)
+    spec:
+
+      containers:
+      - name: vitrine-arq         # nome do container dentro do Pod
+        image: busybox:1.36       # imagem mínima, só para o teste
+        command: ["sleep", "3600"]  # o container fica parado por 1 hora; o foco é o arquivo
+
+        # (B) ONDE a pasta aparece dentro do container
+        volumeMounts:
+        - name: pasta-segredos    # liga com o volume de mesmo nome, lá embaixo em "volumes"
+          mountPath: /etc/segredos  # caminho REAL da pasta dentro do container
+          readOnly: true          # o container só lê os arquivos, não consegue alterá-los
+
+      # (A) DE ONDE vem o conteúdo dessa pasta
+      volumes:
+      - name: pasta-segredos      # rótulo desta fonte (o "fio" que liga ao volumeMounts acima)
+        secret:                   # o conteúdo vem de um Secret
+          secretName: segredo-app # nome do Secret que já existe no cluster
+                                  # resultado: cada chave do Secret vira 1 arquivo na pasta
+                                  # ex.: a chave DB_PASSWORD vira /etc/segredos/DB_PASSWORD

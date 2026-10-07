@@ -66,3 +66,83 @@ exit
 kubectl delete pod <nome-do-pod-com-erro>
 # Atencao: esse certificado se perde se o container do minikube for apagado
 # (minikube delete). Precisa ser reinstalado depois de cada delete.
+
+# Fase 7 - Kubernetes - Modulo 2 (Rede) - Comandos praticados
+# Os YAMLs ficam em 07-kubernetes/yamls/
+
+## Ingress Controller
+minikube addons enable ingress          # instala o nginx como Ingress Controller (so no minikube)
+kubectl get pods -n ingress-nginx       # -n = namespace onde o controller fica
+kubectl get jobs -n ingress-nginx       # os 2 Jobs (admission-create e admission-patch) preparam o certificado do webhook
+kubectl logs job/ingress-nginx-admission-create -n ingress-nginx   # logs de um Job
+
+## Apps de teste e regras do Ingress
+kubectl apply -f apps-teste.yaml        # cria app1 e app2 com seus Services (ClusterIP)
+kubectl apply -f ingress-teste.yaml     # cria as regras: /app1 -> svc-app1, /app2 -> svc-app2
+kubectl get ingress                     # mostra a classe, as regras e o ADDRESS
+kubectl get svc -n ingress-nginx        # tipo do Service do controller (NodePort no minikube)
+kubectl get namespaces                  # lista as "pastas" do cluster
+
+## Acesso no laboratorio (nao existe em producao)
+minikube tunnel                         # faz o papel do load balancer da nuvem; terminal fica preso
+minikube ip                             # IP do container do minikube
+curl http://192.168.49.2/app1           # testa a regra do Ingress pelo IP do minikube
+# Atencao: curl em localhost pode bater num nginx instalado no proprio WSL (rodape "nginx/1.24.0 (Ubuntu)")
+sudo ss -tlnp | grep ':80 '             # (exemplo) mostra quem esta escutando na porta 80
+
+## Contexto do kubectl
+kubectl config current-context          # qual cluster o kubectl esta usando agora
+kubectl cluster-info                    # endereco do kube-apiserver em uso
+minikube update-context                 # corrige o endereco do apiserver no kubeconfig (a porta muda a cada start)
+minikube start --force                  # liga o cluster existente quando se esta logado como root
+
+## Troubleshooting de Pods
+kubectl describe pod -l app=vitrine     # -l filtra por etiqueta; ver a secao Events no final
+kubectl get pods -l app=vitrine -w      # -w vigia e imprime cada mudanca de status
+kubectl get pods -l app=vitrine -o wide # mostra tambem o Node e o IP de cada Pod
+kubectl rollout restart deployment vitrine   # recria os Pods do Deployment, um a um
+kubectl delete pod <nome-exato-do-pod>  # apaga so um Pod; o Deployment cria outro
+kubectl delete -f arquivo.yaml          # apaga tudo que esta descrito no arquivo
+
+## Certificado do Cloudflare (repete a cada reinicio do minikube)
+minikube ssh -- ls -l /usr/local/share/ca-certificates/    # ver se o certificado esta instalado
+minikube ssh -- "openssl x509 -in /usr/local/share/ca-certificates/cloudflare.crt -noout -subject -issuer -dates"
+minikube ssh -- sudo crictl pull busybox:1.36    # testa o download de imagem direto no containerd
+./conserta-cert.sh                      # captura o certificado atual, instala e reinicia o containerd (script em yamls/)
+
+
+# Fase 7 - Kubernetes - Modulo 3 (Configuracao e saude) - Comandos praticados
+
+## ConfigMap e Secret
+kubectl apply -f config-teste.yaml      # cria o ConfigMap config-app e o Secret segredo-app
+kubectl get configmap config-app -o yaml    # valores em texto normal
+kubectl get secret segredo-app -o yaml      # valores em base64
+kubectl get configmap config-app -o jsonpath='{.data.DB_SERVER}'; echo   # extrai so um campo (sem base64)
+kubectl get secret segredo-app -o jsonpath='{.data.DB_PASSWORD}' | base64 -d; echo   # decodifica a senha
+# Erro NotFound: conferir tipo, nome e namespace (configmap e secret sao tipos diferentes)
+
+## Entrega para o Pod
+kubectl apply -f vitrine.yaml           # Deployment com envFrom (variaveis do ConfigMap e do Secret)
+kubectl exec deploy/vitrine -- env | grep DB_   # lista as variaveis recebidas pelo container
+# Pod ja rodando NAO percebe mudanca no ConfigMap: precisa de rollout restart ou delete pod
+kubectl apply -f vitrine-arq.yaml       # Deployment com o Secret montado como ARQUIVOS em /etc/segredos
+kubectl exec deploy/vitrine-arq -- ls /etc/segredos                  # cada chave vira um arquivo
+kubectl exec deploy/vitrine-arq -- cat /etc/segredos/DB_PASSWORD; echo   # conteudo do arquivo
+
+## Equivalentes por comando (exemplo, nao executados)
+kubectl create configmap ajustes-loja --from-literal=DB_SERVER=banco-prod --from-literal=DB_USER=app_loja
+kubectl create secret generic credenciais-loja --from-literal=DB_PASSWORD=senha123
+kubectl create deployment vitrine-cmd --image=busybox:1.36 -- sleep 3600
+kubectl set env deployment/vitrine-cmd --from=configmap/config-app   # liga o ConfigMap ao Deployment
+kubectl create deployment teste --image=nginx --dry-run=client -o yaml   # gera o esqueleto do YAML sem criar nada
+# YAML no Git e o padrao em empresa (versionamento, revisao, sem drift); comando serve para teste e diagnostico
+
+## Probes
+kubectl apply -f garcom.yaml            # readiness probe: cat /tmp/pronto
+kubectl exec deploy/garcom -- touch /tmp/pronto   # cria o arquivo: Pod passa de 0/1 para 1/1
+kubectl exec deploy/garcom -- rm /tmp/pronto      # apaga o arquivo: Pod volta para 0/1, sem reiniciar
+kubectl exec deploy/garcom -- cat /tmp/pronto; echo $?   # $? = codigo de saida (0 = sucesso)
+kubectl apply -f cozinheiro.yaml        # liveness probe: o app "trava" apagando /tmp/vivo apos 20s
+kubectl describe pod -l app=cozinheiro  # Events mostra "Liveness probe failed" e o reinicio
+kubectl scale deployment cozinheiro --replicas=0   # pausa o teste sem apagar o Deployment
+kubectl get pod -l app=garcom -o jsonpath='{.items[0].spec.containers[*].name}'; echo   # nomes dos containers do Pod

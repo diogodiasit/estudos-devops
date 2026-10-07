@@ -1,0 +1,23 @@
+apiVersion: apps/v1                 # versão da API do Deployment
+kind: Deployment                    # tipo: mantém os Pods vivos
+metadata:
+  name: vitrine                     # nome do Deployment
+spec:
+  replicas: 1                       # 1 Pod basta para o teste
+  selector:
+    matchLabels:
+      app: vitrine                  # o Deployment cuida dos Pods com essa etiqueta
+  template:
+    metadata:
+      labels:
+        app: vitrine                # etiqueta que cada Pod recebe
+    spec:
+      containers:
+      - name: vitrine               # nome do container dentro do Pod
+        image: busybox:1.36         # imagem mínima, só para o teste
+        command: ["sleep", "3600"]  # fica parado por 1 hora, sem fazer nada
+        envFrom:                    # "entregue variáveis de ambiente vindas de..."
+        - configMapRef:             # ...um ConfigMap
+            name: config-app        # o nome do ConfigMap que criamos
+        - secretRef:                # ...e também um Secret
+            name: segredo-app       # o nome do Secret que criamos
